@@ -1,0 +1,36 @@
+@model IEnumerable<Intalnirea1.Models.BookRow>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<p>
+    Varianta: <strong>@ViewData["Variant"]</strong> ·
+    <a asp-action="Index" asp-route-v="A">A · fără Include</a> |
+    <a asp-action="Index" asp-route-v="B">B · Include</a> |
+    <a asp-action="Index" asp-route-v="C">C · Load în buclă</a> |
+    <a asp-action="Index" asp-route-v="D">D · proiecție</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Orders</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@item.Title</td>
+            <td>@item.Author</td>
+            <td>@item.Orders</td>
+        </tr>
+}
+    </tbody>
+</table>

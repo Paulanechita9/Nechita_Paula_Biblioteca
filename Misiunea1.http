@@ -1,0 +1,80 @@
+@host = https://localhost:7245
+
+### 1. 
+GET {{host}}/api/v2/books
+
+### 2. 
+GET {{host}}/api/v2/books?genre=SF
+
+### 2.1
+GET {{host}}/api/books?genre=SF
+
+### 3. 
+GET {{host}}/api/v2/books?genre=SF&page=2
+
+### 4. 
+GET {{host}}/api/v2/books/3
+
+### 4.1
+GET {{host}}/api/books/3
+
+### 5. 
+GET {{host}}/api/v2/books/999
+
+### 6. 
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "Carte de test", "price": 25 }
+
+### 7. Trimiteți EXACT aceeași cerere încă o dată
+POST {{host}}/api/v2/books
+Content-Type: application/json
+
+{ "title": "Carte de test", "price": 25 }
+
+### 8. (înlocuiți 41 cu ID-ul vostru de la cererea 6)
+PATCH {{host}}/api/v2/books/41
+Content-Type: application/json
+
+{ "price": 30 }
+
+### 9. (înlocuiți 41 cu ID-ul vostru de la cererea 6)
+DELETE {{host}}/api/v2/books/41
+
+### 10. Trimiteți EXACT aceeași cerere încă o dată
+DELETE {{host}}/api/v2/books/41
+
+### 11. 
+POST {{host}}/api/v2/books
+Content-Type: application/json
+{ "title": "", "price": -5 }
+
+### 12. Doar prețul este greșit
+POST {{host}}/api/v2/books
+Content-Type: application/json
+ 
+{ "title": "Carte corectă", "price": -5 }
+
+### 13. Preț greșit la modificare
+PATCH {{host}}/api/v2/books/3
+Content-Type: application/json
+ 
+{ "price": 0 }
+
+### Experimentul 1 - Recomandare pentru cartea 3
+POST {{host}}/api/v2/books/5/pitch
+
+### Experiment 2 - Fara descriere
+POST {{host}}/api/v2/books/3/pitch
+
+### Experiment 2 - Cartea 37
+POST {{host}}/api/v2/books/37/pitch
+
+
+
+
+
+
+
+
