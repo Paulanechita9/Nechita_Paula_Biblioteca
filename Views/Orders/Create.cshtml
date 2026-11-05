@@ -1,0 +1,46 @@
+@model Intalnirea1.Models.OrderCreateViewModel
+
+@{
+    ViewData["Title"] = "Adaugă comandă";
+}
+
+<h1>Adaugă comandă</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group mb-3">
+        <label asp-for="CustomerID">Cititor</label>
+        <select asp-for="CustomerID"
+                asp-items="ViewBag.CustomerID"
+                class="form-control">
+            <option value="">-- Selectează cititorul --</option>
+        </select>
+        <span asp-validation-for="CustomerID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="BookID">Carte</label>
+        <select asp-for="BookID"
+                asp-items="ViewBag.BookID"
+                class="form-control">
+            <option value="">-- Selectează cartea --</option>
+        </select>
+        <span asp-validation-for="BookID" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="OrderDate">Data comenzii</label>
+        <input asp-for="OrderDate" type="date" class="form-control" />
+        <span asp-validation-for="OrderDate" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvează comanda</button>
+    <a asp-action="Index" class="btn btn-secondary">Înapoi</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
