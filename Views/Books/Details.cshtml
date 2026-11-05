@@ -36,6 +36,23 @@
         </dd>
     </dl>
 </div>
+<h3>Comenzile acestei cărți</h3>
+
+@if (Model?.Orders != null && Model.Orders.Any())
+{
+    <p>Număr total de comenzi: @Model.Orders.Count</p>
+
+    <ul>
+        @foreach (var order in Model.Orders)
+        {
+            <li>Comandă înregistrată</li>
+        }
+    </ul>
+}
+else
+{
+    <p>Nu există comenzi pentru această carte.</p>
+}
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>

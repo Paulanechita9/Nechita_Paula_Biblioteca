@@ -23,7 +23,66 @@ namespace Intalnirea1.Controllers
         }
 
         // GET: Books?v=A|B|C|D  (cele patru variante din fișă; implicit D)
-        public async Task<IActionResult> Index(string v = "D")
+
+        public async Task<IActionResult> Index(string? search, string sort = "price_desc", int page = 1)
+        {
+            var query = _context.Book.AsNoTracking();
+
+            // Cautare dupa titlu
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                var termen = search.Trim().ToLower();
+
+                query = query.Where(b => b.Title.ToLower().Contains(termen));
+            }
+
+            // Sortarea catalogului
+            query = sort switch
+            {
+                "title_asc" => query.OrderBy(b => b.Title),
+                "title_desc" => query.OrderByDescending(b => b.Title),
+                "price_asc" => query.OrderBy(b => b.Price),
+                _ => query.OrderByDescending(b => b.Price)
+            };
+
+            // Proiectie pentru lista cartilor
+
+            const int pageSize = 7;
+
+            int totalBooks = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalBooks / (double)pageSize);
+
+            page = Math.Max(1, page);
+            if (totalPages > 0)
+            {
+                page = Math.Min(page, totalPages);
+            }
+
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = totalPages;
+
+            var books = await query
+    .Skip((page - 1) * pageSize)
+    .Take(pageSize)
+    .Select(b => new BookListItem(
+                    b.ID,
+                    b.Title,
+                    b.Author != null
+                        ? b.Author.FirstName + " " + b.Author.LastName
+                        : "",
+                    b.Genre != null ? b.Genre.Name : "",
+                    b.Price,
+                    b.Orders.Count
+                ))
+                .ToListAsync();
+
+            ViewData["Search"] = search;
+            ViewData["Sort"] = sort;
+
+            return View(books);
+        }
+
+        public async Task<IActionResult> Demo(string v = "D")
         {
             var sw = Stopwatch.StartNew();
             List<BookRow> rows;
@@ -68,7 +127,7 @@ namespace Intalnirea1.Controllers
 
             _logger.LogInformation("Index {Variant}: {Ms} ms", v, sw.ElapsedMilliseconds);
             ViewData["Variant"] = v;
-            return View(rows);
+            return View("Demo", rows); ;
         }
 
         private static List<BookRow> ToRows(List<Book> books) =>
@@ -84,9 +143,10 @@ namespace Intalnirea1.Controllers
             }
 
             var book = await _context.Book
-                .Include(b => b.Genre)
-                .Include(b => b.Author)
-                .FirstOrDefaultAsync(m => m.ID == id);
+    .Include(b => b.Genre)
+    .Include(b => b.Author)
+    .Include(b => b.Orders)
+    .FirstOrDefaultAsync(m => m.ID == id); ;
             if (book == null)
             {
                 return NotFound();
