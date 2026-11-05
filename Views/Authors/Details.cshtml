@@ -9,7 +9,13 @@
 <div>
     <h4>Author</h4>
     <hr />
-    <dl class="row">
+    <dl class="row"> 
+        <dt class="col-sm-2">
+            Nume complet
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>

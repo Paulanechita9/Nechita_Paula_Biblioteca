@@ -98,8 +98,13 @@ namespace Intalnirea1.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["GenreID"] = new SelectList(_context.Set<Genre>(), "ID", "ID");
-            ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FullName");
+            ViewData["AuthorID"] = new SelectList(
+        _context.Author.OrderBy(a => a.LastName),
+        "ID", "FullName");
+
+            ViewData["GenreID"] = new SelectList(
+                _context.Genre.OrderBy(g => g.Name),
+                "ID", "Name");
             return View();
         }
 
@@ -116,8 +121,13 @@ namespace Intalnirea1.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GenreID"] = new SelectList(_context.Set<Genre>(), "ID", "ID", book.GenreID);
-            ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FullName", book.AuthorID);
+            ViewData["AuthorID"] = new SelectList(
+      _context.Author.OrderBy(a => a.LastName),
+      "ID", "FullName", book.AuthorID);
+
+            ViewData["GenreID"] = new SelectList(
+                _context.Genre.OrderBy(g => g.Name),
+                "ID", "Name", book.GenreID);
             return View(book);
         }
 
@@ -134,8 +144,7 @@ namespace Intalnirea1.Controllers
             {
                 return NotFound();
             }
-            ViewData["GenreID"] = new SelectList(_context.Set<Genre>(), "ID", "ID", book.GenreID);
-            ViewData["AuthorID"] = new SelectList(_context.Set<Author>(), "ID", "FullName", book.AuthorID);
+          
             return View(new BookEditViewModel
             {
                 ID = book.ID, Title = book.Title, Price = book.Price,

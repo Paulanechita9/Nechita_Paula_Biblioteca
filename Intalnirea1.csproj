@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.ML.Recommender" Version="0.23.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.7" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
   </ItemGroup>
 
   <ItemGroup>
