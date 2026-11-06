@@ -11,6 +11,7 @@ using OpenAI;
 using System.ClientModel;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<Intalnirea1.Services.RecommenderTrainer>();
 builder.Services.AddDbContext<LibraryContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("LibraryContext") ?? throw new InvalidOperationException("Connection string 'LibraryContext' not found.")));
 

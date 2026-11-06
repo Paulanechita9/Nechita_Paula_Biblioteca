@@ -29,3 +29,15 @@
 ## Ce nu am reușit (opțional)
 
 [De completat la final]
+
+
+
+## Laboratorul Î5
+
+### A1 – Import evaluări
+- Au fost importate 6599 de evaluări din book-ratings.csv.
+- Importul a fost realizat din pagina Admin.
+
+### A2 – Reantrenarea modelului
+- Modelul ML.NET a fost reantrenat cu 6599 de evaluări.
+- RMSE: [completează valoarea afișată în aplicație].

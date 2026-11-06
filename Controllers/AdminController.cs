@@ -9,10 +9,14 @@ namespace Intalnirea1.Controllers
     public class AdminController : Controller
     {
         private readonly LibraryContext _db;
+        private readonly Intalnirea1.Services.RecommenderTrainer _trainer;
 
-        public AdminController(LibraryContext db)
+        public AdminController(
+    LibraryContext db,
+    Intalnirea1.Services.RecommenderTrainer trainer)
         {
             _db = db;
+            _trainer = trainer;
         }
 
         public async Task<IActionResult> Index()
@@ -65,5 +69,18 @@ namespace Intalnirea1.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Retrain()
+        {
+            var result = await _trainer.TrainAsync();
+
+            TempData["Msg"] =
+                $"Model reantrenat cu {result.Count} evaluări. RMSE: {result.Rmse:F4}";
+
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
