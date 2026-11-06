@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Intalnirea1.Data;
 using Intalnirea1.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.ML;
 
 namespace Intalnirea1.Api;
 
@@ -14,11 +15,102 @@ public record NewBookDto(
     int? AuthorID,
     int? GenreID);
 public record PriceDto([Range(1.0, 10000.0)] decimal Price);
+public record RecommendationDto(int BookId, string Title, double Score);
 
 public static class LibraryApi
 {
     public static void MapLibraryApi(this WebApplication app)
     {
+
+        app.MapGet("/api/v2/readers/{readerId:int}/recommendations",
+            async (int readerId, LibraryContext db) =>
+            {
+                var userRatings = await db.Rating
+            .CountAsync(r => r.ReaderId == readerId);
+
+                if (userRatings < 10)
+                {
+                    var popularBooks = await db.Rating
+                .GroupBy(r => r.BookID)
+                .Select(g => new
+                    {
+                        BookId = g.Key,
+                        Average = g.Average(r => r.Stars),
+                        Count = g.Count()
+                    })
+                .OrderByDescending(x => x.Average)
+                .ThenByDescending(x => x.Count)
+                .Take(5)
+                .ToListAsync();
+
+                    var results = new List<RecommendationDto>();
+
+                    foreach (var item in popularBooks)
+                    {
+                        var book = await db.Book.FindAsync(item.BookId);
+
+                        if (book != null)
+                            results.Add(new RecommendationDto(
+                        book.ID, book.Title, item.Average));
+                    }
+
+                    return Results.Ok(results);
+                }
+
+
+                var modelPath = Path.Combine(
+                    app.Environment.ContentRootPath,
+                    "MLModels",
+                    "BookRecommender.zip");
+
+                if (!File.Exists(modelPath))
+                    return Results.Problem("Modelul nu a fost antrenat.");
+
+                var ml = new MLContext();
+                var model = ml.Model.Load(modelPath, out _);
+
+                var ratedBookIds = await db.Rating
+                    .Where(r => r.ReaderId == readerId)
+                    .Select(r => r.BookID)
+                    .ToListAsync();
+
+                var availableBooks = await db.Book
+                    .AsNoTracking()
+                    .Where(b => !ratedBookIds.Contains(b.ID))
+                    .Select(b => new { b.ID, b.Title })
+                    .ToListAsync();
+
+                var predictions = new List<RecommendationDto>();
+
+                using (var engine = ml.Model.CreatePredictionEngine<
+                    BookRating, BookRatingPrediction>(model))
+                {
+                    foreach (var book in availableBooks)
+                    {
+                        var prediction = engine.Predict(new BookRating
+                        {
+                            UserId = readerId,
+                            BookId = book.ID
+                        });
+
+                        if (float.IsFinite(prediction.Score))
+                        {
+                            predictions.Add(new RecommendationDto(
+                                book.ID,
+                                book.Title,
+                                prediction.Score));
+                        }
+                    }
+                }
+
+                return Results.Ok(
+                    predictions
+                        .OrderByDescending(r => r.Score)
+                        .Take(5)
+                        .ToList());
+
+            });
+
         var books = app.MapGroup("/api/v2/books").WithTags("Books · Minimal API");
 
         // Lista cartilor

@@ -41,3 +41,9 @@
 ### A2 – Reantrenarea modelului
 - Modelul ML.NET a fost reantrenat cu 6599 de evaluări.
 - RMSE: [completează valoarea afișată în aplicație].
+
+### A3 – API de recomandări
+- Prag pentru varianta A2: 10 evaluări.
+- Cititorul 5: API testat cu succes, 5 recomandări.
+- Cititorul 999: API testat cu succes, 5 recomandări alternative.
+- Recomandările includ ID-ul cărții, titlul și scorul.
