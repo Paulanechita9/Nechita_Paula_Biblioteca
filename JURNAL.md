@@ -60,3 +60,11 @@
 - Pagina /RecommendationLogs afișează istoricul recomandărilor.
 - Filtrarea după ID-ul cititorului a fost testată cu succes.
 - Paginare implementată: 10 înregistrări pe pagină.
+
+
+### S2 – Dashboard statistic
+- Totalul cărților, evaluărilor și cititorilor este calculat din baza de date.
+- Media evaluărilor este afișată în dashboard.
+- Este afișat numărul recomandărilor înregistrate.
+- Varianta B1: grafic cu numărul evaluărilor grupate după autor.
+- Dashboard-ul a fost testat cu succes la /Admin.

@@ -25,11 +25,51 @@ namespace Intalnirea1.Controllers
         }
 
 
+
         public async Task<IActionResult> Index()
         {
             ViewBag.Ratings = await _db.Rating.CountAsync();
+
+            ViewBag.TotalBooks = await _db.Book.CountAsync();
+
+            ViewBag.TotalReaders = await _db.Rating
+                .Select(r => r.ReaderId)
+                .Distinct()
+                .CountAsync();
+
+            ViewBag.AverageRating = await _db.Rating
+                .AverageAsync(r => (double?)r.Stars) ?? 0;
+
+            ViewBag.TotalRecommendations =
+                await _db.RecommendationLog.CountAsync();
+
+            var authorStats = await _db.Rating
+                .Join(_db.Book,
+                    rating => rating.BookID,
+                    book => book.ID,
+                    (rating, book) => new { rating, book })
+                .GroupBy(x => x.book.AuthorID)
+                .Select(g => new
+                {
+                    AuthorId = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(10)
+                .ToListAsync();
+
+            ViewBag.AuthorStats = authorStats;
+            ViewBag.AuthorLabels = authorStats
+    .Select(x => $"Autor #{x.AuthorId}")
+    .ToArray();
+
+            ViewBag.AuthorCounts = authorStats
+                .Select(x => x.Count)
+                .ToArray();
+
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

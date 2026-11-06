@@ -35,5 +35,68 @@
 <form asp-controller="Admin" asp-action="TrainGenre" method="post">
     <button type="submit" class="btn btn-primary">
         Antrenează clasificatorul de genuri
+
+        <hr />
+
+        <h2>Dashboard – Statistici bibliotecă</h2>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <h5>Total cărți</h5>
+                <h3>@ViewBag.TotalBooks</h3>
+            </div>
+
+            <div class="col-md-4">
+                <h5>Cititori care au evaluat</h5>
+                <h3>@ViewBag.TotalReaders</h3>
+            </div>
+
+            <div class="col-md-4">
+                <h5>Total evaluări</h5>
+                <h3>@ViewBag.Ratings</h3>
+            </div>
+
+            <div class="col-md-4 mt-4">
+                <h5>Media evaluărilor</h5>
+                <h3>@(((double)ViewBag.AverageRating).ToString("F2")) / 5</h3>
+            </div>
+
+            <div class="col-md-4 mt-4">
+                <h5>Recomandări generate</h5>
+                <h3>@ViewBag.TotalRecommendations</h3>
+            </div>
+        </div>
+
     </button>
 </form>
+
+<hr />
+
+<h3>Evaluări pe autori – Varianta B1</h3>
+
+<canvas id="authorsChart" style="max-height:400px"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const authorLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.AuthorLabels));
+    const authorCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.AuthorCounts));
+
+    new Chart(document.getElementById("authorsChart"), {
+        type: "bar",
+        data: {
+            labels: authorLabels,
+            datasets: [{
+                label: "Număr evaluări",
+                data: authorCounts,
+                backgroundColor: "#4472C4"
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
