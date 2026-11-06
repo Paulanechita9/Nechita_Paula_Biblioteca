@@ -190,6 +190,31 @@ namespace Intalnirea1.Migrations
                     b.ToTable("Rating");
                 });
 
+            modelBuilder.Entity("Intalnirea1.Models.RecommendationLog", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("BookID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReaderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Score")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BookID");
+
+                    b.ToTable("RecommendationLog");
+                });
+
             modelBuilder.Entity("BookPublisher", b =>
                 {
                     b.HasOne("Intalnirea1.Models.Book", null)
@@ -240,6 +265,17 @@ namespace Intalnirea1.Migrations
                 });
 
             modelBuilder.Entity("Intalnirea1.Models.Rating", b =>
+                {
+                    b.HasOne("Intalnirea1.Models.Book", "Book")
+                        .WithMany()
+                        .HasForeignKey("BookID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("Intalnirea1.Models.RecommendationLog", b =>
                 {
                     b.HasOne("Intalnirea1.Models.Book", "Book")
                         .WithMany()

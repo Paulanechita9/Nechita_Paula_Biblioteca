@@ -67,6 +67,19 @@ public static class LibraryApi
                         book.ID, book.Title, item.Average));
                     }
 
+                    foreach (var recommendation in results)
+                    {
+                        db.RecommendationLog.Add(new RecommendationLog
+                        {
+                            ReaderId = readerId,
+                            BookID = recommendation.BookId,
+                            Score = recommendation.Score,
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+
+                    await db.SaveChangesAsync();
+
                     return Results.Ok(results);
                 }
 
@@ -116,11 +129,27 @@ public static class LibraryApi
                     }
                 }
 
-                return Results.Ok(
-                    predictions
-                        .OrderByDescending(r => r.Score)
-                        .Take(5)
-                        .ToList());
+
+                var topRecommendations = predictions
+                    .OrderByDescending(r => r.Score)
+                    .Take(5)
+                    .ToList();
+
+                foreach (var recommendation in topRecommendations)
+                {
+                    db.RecommendationLog.Add(new RecommendationLog
+                    {
+                        ReaderId = readerId,
+                        BookID = recommendation.BookId,
+                        Score = recommendation.Score,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+
+                await db.SaveChangesAsync();
+
+                return Results.Ok(topRecommendations);
+                ;
 
             });
 

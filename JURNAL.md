@@ -53,3 +53,10 @@
 - Model antrenat cu ML.NET.
 - MacroAccuracy: 0,7483 (74,83%).
 - MicroAccuracy: 0,7509 (75,09%).
+
+### S1 – Jurnalizarea recomandărilor
+- Am creat tabelul RecommendationLog prin migrare EF Core.
+- Recomandările personalizate și alternative sunt salvate automat.
+- Pagina /RecommendationLogs afișează istoricul recomandărilor.
+- Filtrarea după ID-ul cititorului a fost testată cu succes.
+- Paginare implementată: 10 înregistrări pe pagină.
