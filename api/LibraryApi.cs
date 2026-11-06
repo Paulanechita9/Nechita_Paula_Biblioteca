@@ -16,11 +16,24 @@ public record NewBookDto(
     int? GenreID);
 public record PriceDto([Range(1.0, 10000.0)] decimal Price);
 public record RecommendationDto(int BookId, string Title, double Score);
-
+public record GenreDescriptionRequest(string Description);
 public static class LibraryApi
 {
+
     public static void MapLibraryApi(this WebApplication app)
     {
+        app.MapPost("/api/v2/genre/predict",
+            (GenreDescriptionRequest request,
+             Intalnirea1.Services.GenreClassifier classifier) =>
+            {
+                if (string.IsNullOrWhiteSpace(request.Description))
+                    return Results.BadRequest("Introdu o descriere.");
+
+                var genre = classifier.Predict(request.Description);
+
+                return Results.Ok(new { genre });
+            });
+
 
         app.MapGet("/api/v2/readers/{readerId:int}/recommendations",
             async (int readerId, LibraryContext db) =>

@@ -47,3 +47,9 @@
 - Cititorul 5: API testat cu succes, 5 recomandări.
 - Cititorul 999: API testat cu succes, 5 recomandări alternative.
 - Recomandările includ ID-ul cărții, titlul și scorul.
+
+### A4 – Clasificarea genurilor literare
+- Fișier utilizat: book-descriptions.csv.
+- Model antrenat cu ML.NET.
+- MacroAccuracy: 0,7483 (74,83%).
+- MicroAccuracy: 0,7509 (75,09%).

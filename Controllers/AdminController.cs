@@ -1,8 +1,9 @@
 ﻿
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Intalnirea1.Data;
 using Intalnirea1.Models;
+using Intalnirea1.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Intalnirea1.Controllers
 {
@@ -10,14 +11,19 @@ namespace Intalnirea1.Controllers
     {
         private readonly LibraryContext _db;
         private readonly Intalnirea1.Services.RecommenderTrainer _trainer;
+       
+        private readonly Intalnirea1.Services.GenreClassifier _genreClassifier;
 
         public AdminController(
-    LibraryContext db,
-    Intalnirea1.Services.RecommenderTrainer trainer)
+     LibraryContext db,
+     Intalnirea1.Services.RecommenderTrainer trainer,
+     Intalnirea1.Services.GenreClassifier genreClassifier)
         {
             _db = db;
             _trainer = trainer;
+            _genreClassifier = genreClassifier;
         }
+
 
         public async Task<IActionResult> Index()
         {
@@ -73,11 +79,25 @@ namespace Intalnirea1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Retrain()
+
         {
             var result = await _trainer.TrainAsync();
 
             TempData["Msg"] =
                 $"Model reantrenat cu {result.Count} evaluări. RMSE: {result.Rmse:F4}";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult TrainGenre()
+        {
+            var result = _genreClassifier.Train();
+
+            TempData["Msg"] =
+                $"Clasificator antrenat! MacroAccuracy: {result.Accuracy:F4}, MicroAccuracy: {result.MicroAccuracy:F4}";
 
             return RedirectToAction(nameof(Index));
         }
