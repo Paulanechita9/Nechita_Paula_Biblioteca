@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="../Biblioteca.Client/Biblioteca.Client.csproj" Id="282b4604-16c0-47eb-8bc9-55a317fc51f9" />
+  <Project Path="../Biblioteca.MLExperimente/Biblioteca.MLExperimente.csproj" Id="6b3cdb26-8e96-41b1-a29d-cb5698f2d17c" />
   <Project Path="Intalnirea1.csproj" />
 </Solution>

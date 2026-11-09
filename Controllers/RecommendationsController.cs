@@ -15,9 +15,14 @@ public class RecommendationsController(LibraryContext db,
             .Select(b => new { b.ID, b.Title }).ToListAsync();
 
         var top = books
-            .Select(b => new Recommendation(b.Title,
-                pool.Predict("BookRecommender",
-                    new BookRating { UserId = userId, BookId = b.ID }).Score))
+
+.Select(b => new Recommendation(
+    b.ID,
+    b.Title,
+    pool.Predict("BookRecommender",
+        new BookRating { UserId = userId, BookId = b.ID }).Score,
+    false))
+
             .Where(r => !float.IsNaN(r.Score))
             .OrderByDescending(r => r.Score)
             .Take(5).ToList();

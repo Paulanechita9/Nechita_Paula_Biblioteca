@@ -9,6 +9,7 @@ using Scalar.AspNetCore;
 using Microsoft.Extensions.AI;
 using OpenAI;
 using System.ClientModel;
+using Intalnirea1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<Intalnirea1.Services.RecommenderTrainer>();
@@ -38,7 +39,10 @@ builder.Services.AddSingleton<IChatClient>(chat);
 
 builder.Services.AddValidation();
 builder.Services.AddOpenApi();
+builder.Services.AddGrpc();
+builder.Services.AddScoped<RecommendationService>();
 var app = builder.Build();
+app.MapGrpcService<RecommenderGrpcService>();
 
 
 
