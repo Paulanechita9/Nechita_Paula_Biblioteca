@@ -13,8 +13,11 @@ public record BookDetails(int Id, string Title, string? Author, string? Genre, i
 public class LibraryTools
 {
     [McpServerTool(Name = "search_books", ReadOnly = true, Destructive = false, OpenWorld = false)]
+
+
     [Description("Cauta carti in catalogul Bibliotecii dupa un cuvant din titlu sau din numele autorului. " +
-                 "Intoarce cel mult 10 carti, cu ID, titlu, autor, gen, an si pret.")]
+             "Intoarce cel mult 10 carti, cu ID, titlu, autor, gen, an si pret.")]
+
     public static async Task<List<BookInfo>> SearchBooks(
         LibraryContext db,                                    
         [Description("Cuvantul cautat, de exemplu 'Rebreanu' sau 'Ion'.")] string query,
@@ -79,4 +82,23 @@ public class LibraryTools
                 b.Genre == null ? null : b.Genre.Name, b.Year, b.Price))
             .ToListAsync(ct);
      }
+
+    [McpServerTool(Name = "books_by_genre", ReadOnly = true, Destructive = false, OpenWorld = false)]
+    [Description("Cauta carti din biblioteca dupa genul literar. Foloseste acest instrument cand utilizatorul cere carti dintr-un anumit gen.")]
+    public static async Task<List<BookInfo>> BooksByGenre(
+        LibraryContext db,
+        [Description("Numele genului literar cautat, de exemplu Roman sau Fantasy.")] string genre,
+        CancellationToken ct = default)
+    {
+        return await db.Book.AsNoTracking()
+            .Where(b => b.Genre != null && b.Genre.Name.Contains(genre))
+            .Select(b => new BookInfo(
+                b.ID,
+                b.Title,
+                b.Author == null ? null : b.Author.FirstName + " " + b.Author.LastName,
+                b.Genre == null ? null : b.Genre.Name,
+                b.Year,
+                b.Price))
+            .ToListAsync(ct);
+    }
 }

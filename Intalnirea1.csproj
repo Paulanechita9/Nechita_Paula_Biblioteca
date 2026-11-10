@@ -48,6 +48,8 @@
 	<ItemGroup>
 		<Compile Remove="Biblioteca.Client\**\*.cs" />
 		<Compile Remove="Biblioteca.MLExperimente\**\*.cs" />
+        <Compile Remove="Biblioteca.Agent\**\*.cs" />
+
 	</ItemGroup>
 
 </Project>
