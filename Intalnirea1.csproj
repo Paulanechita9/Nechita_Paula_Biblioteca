@@ -25,6 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.ML" Version="5.0.1" />
     <PackageReference Include="Microsoft.ML.Recommender" Version="0.23.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.4.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.7" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
   </ItemGroup>
@@ -37,10 +38,16 @@
 
   <ItemGroup>
     <Folder Include="DataML\" />
+    <Folder Include="Mcp\" />
     <Folder Include="Protos\" />
   </ItemGroup>
 	<ItemGroup>
 		<Protobuf Include="Protos\recommender.proto" GrpcServices="Server" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Biblioteca.Client\**\*.cs" />
+		<Compile Remove="Biblioteca.MLExperimente\**\*.cs" />
 	</ItemGroup>
 
 </Project>

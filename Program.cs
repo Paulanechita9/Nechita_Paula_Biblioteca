@@ -40,8 +40,12 @@ builder.Services.AddSingleton<IChatClient>(chat);
 builder.Services.AddValidation();
 builder.Services.AddOpenApi();
 builder.Services.AddGrpc();
+builder.Services.AddMcpServer()
+    .WithHttpTransport()
+    .WithToolsFromAssembly();
 builder.Services.AddScoped<RecommendationService>();
 var app = builder.Build();
+app.MapMcp("/mcp");
 app.MapGrpcService<RecommenderGrpcService>();
 
 
