@@ -1,15 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Intalnirea1.Api;
 using Intalnirea1.Data;
 using Intalnirea1.Models;
+using Intalnirea1.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ML;
-using Intalnirea1.Api;
+using OllamaSharp;
+using OpenAI;
 using Scalar.AspNetCore;
+using System.ClientModel;
 
 using Microsoft.Extensions.AI;
-using OpenAI;
-using System.ClientModel;
-using Intalnirea1.Services;
+using OllamaSharp;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<Intalnirea1.Services.RecommenderTrainer>();
@@ -44,7 +49,25 @@ builder.Services.AddMcpServer()
     .WithHttpTransport()
     .WithToolsFromAssembly();
 builder.Services.AddScoped<RecommendationService>();
+
+builder.Services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>>(
+    new OllamaApiClient(new Uri("http://localhost:11434"), "embeddinggemma"));
+
+builder.Services.AddSingleton<DocumentIndex>();
+
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LibraryContext>();
+    var index = app.Services.GetRequiredService<DocumentIndex>();
+
+    await index.BuildAsync(
+        db,
+        Path.Combine(app.Environment.ContentRootPath, "Docs", "regulament.md"));
+}
+
 app.MapMcp("/mcp");
 app.MapGrpcService<RecommenderGrpcService>();
 
