@@ -68,3 +68,16 @@
 - Este afișat numărul recomandărilor înregistrate.
 - Varianta B1: grafic cu numărul evaluărilor grupate după autor.
 - Dashboard-ul a fost testat cu succes la /Admin.
+
+
+## Laboratorul 9
+
+### A1 – Portalul cititorului
+
+Am creat aplicația Biblioteca.Portal, care comunică prin gRPC cu serviciul de recomandări din Intalnirea1.
+
+Am testat cititorul cu ID 1212, solicitând 5 recomandări.
+
+Rezultat: au fost afișate 5 cărți, toate cu eticheta „cititor nou”.
+
+Eticheta apare deoarece cititorul nu are evaluări înregistrate, iar sistemul folosește recomandări bazate pe popularitatea cărților.
