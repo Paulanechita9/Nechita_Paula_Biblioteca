@@ -70,6 +70,7 @@ using (var scope = app.Services.CreateScope())
 
 app.MapMcp("/mcp");
 app.MapGrpcService<RecommenderGrpcService>();
+app.MapGrpcService<ReaderRatingsGrpcService>();
 
 
 

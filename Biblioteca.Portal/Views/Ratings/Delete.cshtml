@@ -1,0 +1,30 @@
+﻿@model BibliotecaGrpc.RatingItem
+
+@{
+    ViewData["Title"] = "Șterge evaluarea";
+    int readerId = ViewBag.ReaderId;
+}
+
+<h1>Șterge evaluarea</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<p>Ești sigură că vrei să ștergi această evaluare?</p>
+
+<p><strong>Carte:</strong> @Model.Title</p>
+<p><strong>Notă:</strong> @Model.Stars</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="hidden" name="readerId" value="@readerId" />
+
+    <button type="submit" class="btn btn-danger">
+        Confirmă ștergerea
+    </button>
+
+    <a asp-action="Index" asp-route-readerId="@readerId"
+       class="btn btn-secondary">Anulează</a>
+</form>

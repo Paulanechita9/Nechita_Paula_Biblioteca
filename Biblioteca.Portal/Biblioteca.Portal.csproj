@@ -18,7 +18,9 @@
   
 
 	<ItemGroup>
+		
 		<Protobuf Include="Protos\recommender.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\ratings.proto" GrpcServices="Client" />
 	</ItemGroup>
 
 

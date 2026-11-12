@@ -1,0 +1,34 @@
+﻿@{
+    ViewData["Title"] = "Adaugă evaluare";
+    int readerId = ViewBag.ReaderId;
+}
+
+<h1>Adaugă o evaluare</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form asp-action="Create" method="post">
+    <input type="hidden" name="readerId" value="@readerId" />
+
+    <div class="mb-3">
+        <label for="bookId" class="form-label">ID carte</label>
+        <input type="number" name="bookId" id="bookId"
+               class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label for="stars" class="form-label">Notă (1–5)</label>
+        <input type="number" name="stars" id="stars"
+               class="form-control" min="1" max="5" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Salvează evaluarea
+    </button>
+
+    <a asp-action="Index" asp-route-readerId="@readerId"
+       class="btn btn-secondary">Înapoi</a>
+</form>

@@ -45,7 +45,10 @@
   </ItemGroup>
 	<ItemGroup>
 		<Protobuf Include="Protos\recommender.proto" GrpcServices="Server" />
-	</ItemGroup>
+
+		<Protobuf Include="Protos\ratings.proto" GrpcServices="Server" />
+
+</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="Biblioteca.Client\**\*.cs" />

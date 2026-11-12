@@ -140,3 +140,26 @@ Teste efectuate din Biblioteca.Portal:
    Mesaj: Error connecting to subchannel.
 
 Concluzie: serverul returnează coduri gRPC corecte pentru cererile invalide, iar portalul afișează eroarea de conexiune fără să se blocheze.
+
+### S1 – Evaluările mele prin gRPC
+
+Am implementat serviciul ReaderRatingsGrpcService cu 5 metode:
+ListRatings, GetRating, AddRating, UpdateRating și DeleteRating.
+
+Am creat în Biblioteca.Portal paginile Index, Create, Edit și Delete.
+
+Teste pentru cititorul 1212:
+
+1. Am adăugat evaluarea pentru Baltagul (ID carte 1), nota 5.
+2. Am adăugat evaluarea pentru Enigma Otiliei (ID carte 2), nota 4.
+3. Am modificat nota pentru Enigma Otiliei din 4 în 3.
+4. Am șters evaluarea pentru Baltagul.
+5. Am încercat să evaluez cartea cu ID 999.
+   Rezultat: NotFound – Cartea solicitată nu există.
+6. Am încercat să acord nota 7.
+   Rezultat: InvalidArgument – Nota trebuie să fie între 1 și 5.
+
+Securitate:
+În implementarea actuală, oricine poate introduce un ID de cititor și poate accesa operațiile asupra evaluărilor.
+
+Pentru ca fiecare cititor să își poată modifica doar propriile evaluări, trebuie implementată autentificarea și autorizarea. Identitatea cititorului trebuie preluată din sesiunea sau tokenul autentificat, nu dintr-un câmp introdus manual. Serverul trebuie să verifice că evaluarea aparține cititorului autentificat înainte de modificare sau ștergere.
