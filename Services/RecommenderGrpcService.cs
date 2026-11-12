@@ -73,11 +73,24 @@ public class RecommenderGrpcService(
         };
     }
 
+
     private static BookScore ToMessage(Recommendation r) => new()
     {
         BookId = r.BookId,
         Title = r.Title,
         Score = r.Score,
-        Fallback = r.Fallback
+        Fallback = r.Fallback,
+        Label = Eticheta(r)
     };
+
+    // Pragurile variantei A2
+    private const float PragFoarte = 3.8f;
+    private const float PragRecomandata = 2.8f;
+
+    private static string Eticheta(Recommendation r) =>
+        r.Fallback ? "Populară (cititor nou)"
+        : r.Score >= PragFoarte ? "Foarte recomandată"
+        : r.Score >= PragRecomandata ? "Recomandată"
+        : "Neutră";
+
 }

@@ -81,3 +81,42 @@ Am testat cititorul cu ID 1212, solicitând 5 recomandări.
 Rezultat: au fost afișate 5 cărți, toate cu eticheta „cititor nou”.
 
 Eticheta apare deoarece cititorul nu are evaluări înregistrate, iar sistemul folosește recomandări bazate pe popularitatea cărților.
+
+
+### A2 – Evoluția contractului gRPC
+
+Am adăugat câmpul label = 5 în recommender.proto din server și am implementat etichetele pentru varianta A2.
+
+Praguri:
+- Foarte recomandată: scor >= 3,8
+- Recomandată: scor >= 2,8
+
+Test de compatibilitate:
+Am pornit serverul actualizat și Biblioteca.Portal cu versiunea veche a fișierului recommender.proto.
+
+Rezultat: portalul a afișat corect 5 recomandări pentru cititorul 1212, cu titluri, scoruri și indicatorul „cititor nou”.
+
+Concluzie: adăugarea unui câmp nou în contractul Protocol Buffers nu afectează clientul existent, deoarece acesta ignoră câmpurile necunoscute.
+
+#### Test Biblioteca.Client cu vechiul contract gRPC
+
+Opțiunea 1 – Unary:
+Au fost afișate 3 recomandări, cu titluri și scoruri, fără erori.
+
+Opțiunea 2 – Server streaming:
+Au fost afișate 5 recomandări succesiv, cu marcaje de timp și scoruri, fără erori.
+
+Concluzie: Biblioteca.Client funcționează în continuare cu serverul actualizat, chiar dacă folosește versiunea veche a contractului recommender.proto.
+
+#### Experiment – Modificarea numărului câmpului title
+
+Am modificat temporar câmpul title din recommender.proto al serverului, de la 2 la 6, păstrând title = 2 în portal.
+
+Rezultat:
+- Coloana „Carte” a apărut goală pentru toate cele 5 recomandări.
+- Scorurile și etichetele au continuat să fie afișate corect.
+
+Concluzie:
+Numerele câmpurilor din Protocol Buffers identifică datele transmise. Schimbarea numărului unui câmp existent afectează compatibilitatea cu clienții care folosesc vechiul contract.
+
+După experiment, am revenit la title = 2 în server.

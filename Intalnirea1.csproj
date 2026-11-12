@@ -54,5 +54,13 @@
 
 	</ItemGroup>
 
+
+	<ItemGroup>
+		<Compile Remove="Biblioteca.Portal\**\*.cs" />
+		<Content Remove="Biblioteca.Portal\**" />
+		<None Remove="Biblioteca.Portal\**" />
+	</ItemGroup>
+
+
 </Project>
 
