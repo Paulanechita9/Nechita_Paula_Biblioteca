@@ -120,3 +120,23 @@ Concluzie:
 Numerele câmpurilor din Protocol Buffers identifică datele transmise. Schimbarea numărului unui câmp existent afectează compatibilitatea cu clienții care folosesc vechiul contract.
 
 După experiment, am revenit la title = 2 în server.
+
+### A3 – Erori gRPC cu coduri corecte
+
+Am adăugat validări în metodele Recommend și StreamRecommendations.
+
+Teste efectuate din Biblioteca.Portal:
+
+1. ReaderId = -3, Top = 5
+   StatusCode: InvalidArgument
+   Mesaj: reader_id trebuie să fie un număr pozitiv.
+
+2. ReaderId = 1212, Top = 50
+   StatusCode: InvalidArgument
+   Mesaj: top poate fi cel mult 20.
+
+3. Serverul Intalnirea1 oprit
+   StatusCode: Unavailable
+   Mesaj: Error connecting to subchannel.
+
+Concluzie: serverul returnează coduri gRPC corecte pentru cererile invalide, iar portalul afișează eroarea de conexiune fără să se blocheze.
