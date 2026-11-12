@@ -86,6 +86,24 @@ async Task Inspector()
     Console.WriteLine($"IsError: {result.IsError}");
     foreach (var block in result.Content.OfType<TextContentBlock>())
         Console.WriteLine(block.Text);
+
+    Console.WriteLine("\nTest books_by_year (2000–2020):");
+
+    var yearResult = await mcp.CallToolAsync(
+        "books_by_year",
+        new Dictionary<string, object?>
+        {
+            ["fromYear"] = 2000,
+            ["toYear"] = 2020
+        });
+
+    Console.WriteLine($"IsError: {yearResult.IsError}");
+
+    foreach (var block in yearResult.Content.OfType<TextContentBlock>())
+    {
+        Console.WriteLine(block.Text);
+    }
+
 }
 
 // M2

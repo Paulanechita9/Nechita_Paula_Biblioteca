@@ -1,8 +1,9 @@
 // Mcp/LibraryTools.cs
-using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
-using ModelContextProtocol.Server;
 using Intalnirea1.Data;
+using Microsoft.EntityFrameworkCore;
+using ModelContextProtocol;
+using ModelContextProtocol.Server;
+using System.ComponentModel;
 
 public record BookInfo(int Id, string Title, string? Author, string? Genre, int Year, decimal Price);
 
@@ -101,4 +102,47 @@ public class LibraryTools
                 b.Price))
             .ToListAsync(ct);
     }
+
+    [McpServerTool(
+        Name = "books_by_year",
+        ReadOnly = true,
+        Destructive = false,
+        OpenWorld = false)]
+    [Description("Cauta cartile publicate intr-un interval de ani. Foloseste acest instrument cand utilizatorul cere carti aparute intre doi ani.")]
+    public static async Task<List<BookInfo>> BooksByYear(
+        LibraryContext db,
+        [Description("Anul de inceput al intervalului, inclusiv.")] int fromYear,
+        [Description("Anul de sfarsit al intervalului, inclusiv.")] int toYear,
+        CancellationToken ct = default)
+    {
+        if (fromYear <= 0 || toYear <= 0)
+            throw new McpException(
+                "Anii trebuie sa fie numere pozitive. Introdu doi ani valizi.");
+
+        if (fromYear > toYear)
+            throw new McpException(
+                "Interval invalid: anul de inceput trebuie sa fie mai mic sau egal cu anul de sfarsit. Inverseaza anii.");
+
+        var books = await db.Book
+            .AsNoTracking()
+            .Where(b => b.Year >= fromYear && b.Year <= toYear)
+            .OrderBy(b => b.Year)
+            .ThenBy(b => b.Title)
+            .Take(10)
+            .Select(b => new BookInfo(
+                b.ID,
+                b.Title,
+                b.Author == null ? null : b.Author.FirstName + " " + b.Author.LastName,
+                b.Genre == null ? null : b.Genre.Name,
+                b.Year,
+                b.Price))
+            .ToListAsync(ct);
+
+        if (books.Count == 0)
+            throw new McpException(
+                $"Nu exista carti intre anii {fromYear} si {toYear}. Incearca un interval mai larg.");
+
+        return books;
+    }
+
 }

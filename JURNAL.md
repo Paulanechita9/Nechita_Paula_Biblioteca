@@ -163,3 +163,38 @@ Securitate:
 În implementarea actuală, oricine poate introduce un ID de cititor și poate accesa operațiile asupra evaluărilor.
 
 Pentru ca fiecare cititor să își poată modifica doar propriile evaluări, trebuie implementată autentificarea și autorizarea. Identitatea cititorului trebuie preluată din sesiunea sau tokenul autentificat, nu dintr-un câmp introdus manual. Serverul trebuie să verifice că evaluarea aparține cititorului autentificat înainte de modificare sau ștergere.
+
+### S2 – Tool MCP books_by_year (varianta B1)
+
+Am implementat instrumentul MCP books_by_year în LibraryTools.cs.
+
+Parametri:
+- fromYear – anul de început, inclusiv
+- toYear – anul de sfârșit, inclusiv
+
+Instrumentul returnează maximum 10 cărți, ordonate după anul publicării și titlu.
+
+Teste efectuate:
+
+1. Inspector MCP – schema JSON
+   Instrumentul books_by_year apare în listă, cu ambii parametri obligatorii, de tip integer.
+
+2. Interval valid: 2000–2020
+   Rezultat: 7 cărți, publicate între 2003 și 2019.
+   IsError: fără eroare.
+
+3. Interval inversat: 2020–2000
+   Rezultat: IsError = True.
+   Mesaj: Interval invalid. Anul de început trebuie să fie mai mic sau egal cu anul de sfârșit.
+
+4. Test prin Agent
+   Întrebare: Ce cărți au fost publicate între 2000 și 2020?
+   Agentul a ales inițial search_books și nu a găsit rezultate.
+
+   După instrucțiunea explicită de folosire a instrumentului books_by_year, Agentul a apelat corect:
+   books_by_year(fromYear=2000, toYear=2020)
+
+   Rezultat: 7 cărți, cu titlu, autor și an.
+
+Concluzie:
+Instrumentul MCP funcționează corect. Descrierea instrumentelor influențează alegerea lor de către Agent, iar solicitările explicite pot îmbunătăți selectarea instrumentului potrivit.
